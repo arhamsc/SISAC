@@ -1,0 +1,19 @@
+{
+  "name": "sisac-api",
+  "version": "1.0.0",
+  "description": "SISAC application backend api",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arhamsc/SISAC-Backend.git"
+  },
+  "author": "KARS",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/arhamsc/SISAC-Backend/issues"
+  },
+  "homepage": "https://github.com/arhamsc/SISAC-Backend#readme"
+}
