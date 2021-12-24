@@ -19,7 +19,7 @@ module.exports.login = function (req, res, next) {
             req.login(user, {session: false}, async (error) => {
                 if (error) return res.send(error);
                 const body = {_id: user._id, username: user.username};
-                const token = jwt.sign({user: body}, process.env.SECRET, {expiresIn: '30s'});
+                const token = jwt.sign({user: body}, process.env.SECRET, {expiresIn: '1d'});
                 return res.json({token});
             });
         } catch(error) {
@@ -28,3 +28,7 @@ module.exports.login = function (req, res, next) {
         }
     })(req, res);
 };
+
+module.exports.refreshToken = async(req, res, next) => {
+
+}

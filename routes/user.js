@@ -8,5 +8,5 @@ router.post('/signup', passport.authenticate('signup', {session: false}), userCo
 
 router.post('/login',  userController.login);
 
-router.get('/logout', userController.logout);
+
 module.exports = router;
