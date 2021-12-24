@@ -28,9 +28,3 @@ module.exports.login = function (req, res, next) {
         }
     })(req, res);
 };
-
-module.exports.logout = (req,res) =>{
-    const {secret_token} = req.params;
-    secret_token = null;
-    req.json({message: "Logged out"})
-}

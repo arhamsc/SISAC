@@ -12,8 +12,6 @@ const bodyParser = require('body-parser');
 //unnamed requires
 require('./middleWare/auth/auth');
 
-//model imports
-const User = require('./models/user');
 
 //route imports 
 const userRoute = require('./routes/user');
