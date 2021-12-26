@@ -13,6 +13,11 @@ const userSchema = new Schema({
         type: String,
         required: [true, 'Password is required'],
     },
+    role: {
+        type: String,
+      //  require: [true, 'Role is required'],
+      enum: ['Student', 'Faculty', 'Other']
+    }
 });
 
 userSchema.pre('save', async function(next) {

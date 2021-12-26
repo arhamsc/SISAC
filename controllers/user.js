@@ -1,9 +1,18 @@
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 
-module.exports.signup = async (req,res,next) => {
+const User = require('../models/user');
+
+const expiryTime = 86400000;
+
+module.exports.signup = async function (req,res,next) {
+    const { role, username } =req.body;
+    const user = await User.findOne({username});
+    user.role = role;
+    await user.save();
     res.json({
         user: req.user,
+        role: req.user.role
     });
 }
 
@@ -18,9 +27,11 @@ module.exports.login = function (req, res, next) {
             }
             req.login(user, {session: false}, async (error) => {
                 if (error) return res.send(error);
-                const body = {_id: user._id, username: user.username};
-                const token = jwt.sign({user: body}, process.env.SECRET, {expiresIn: '1d'});
-                return res.json({token});
+                const foundUser = await User.findOne({username: user.username});
+                const role = foundUser.role;
+                const body = {_id: user._id, username: user.username, role: user.role};
+                const token = jwt.sign({user: body}, process.env.SECRET, {expiresIn: expiryTime});
+                return res.json({token, id: foundUser._id, username: foundUser.username, role: role, expiresIn: expiryTime, expiryDate: Date.now()});
             });
         } catch(error) {
             console.log(error);

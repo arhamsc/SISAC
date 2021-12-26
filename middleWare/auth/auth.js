@@ -7,16 +7,18 @@ const ExtractJWT = require('passport-jwt').ExtractJwt;
 
 //for user registration
 passport.use('signup', new localStrategy({usernameField: 'username', passwordField: 'password'},
-    async (username, password, done) => {
+    async (username, password, done) => {      
         try {
+            
             const user = await User.findOne({username: username});
             if (user) {
                 return done(null, { message: 'User Exists' });
             }
             const userNew = await new User({username: username, password: password});
             await userNew.save();
-            return done(null, userNew, {message: "Successfully Signed up"});
+            return done(null, userNew, {message: "Successfully Signed up"});       
         } catch(err) {
+            console.log(err);
             done(err);
         }
     }
