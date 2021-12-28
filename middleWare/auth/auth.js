@@ -55,13 +55,13 @@ async (username, password, done) => {
 
 const opts = {};
 opts.secretOrKey = process.env.SECRET;
-opts.jwtFromRequest = ExtractJWT.fromBodyField('secret_token');
+// opts.jwtFromRequest = ExtractJWT.fromBodyField('secret_token') ;
+opts.jwtFromRequest = ExtractJWT.fromHeader('secret_token');
 passport.use( new JWTstrategy(opts, function (jwt_payload, done) {
     try {
         return done(null, jwt_payload.user);
     } catch(error) {
-        console.log(error);
-        done({message: "User is not Logged In"});
+       return done({message: "User is not Logged In"});
     }
 })
 );

@@ -9,6 +9,9 @@ const mongoose = require("mongoose");
 const passport = require('passport');
 const bodyParser = require('body-parser');
 
+//helper imports
+const {jwt_auth} = require('./middleWare/helpers');
+
 //unnamed requires
 require('./middleWare/auth/auth');
 
@@ -16,6 +19,7 @@ require('./middleWare/auth/auth');
 //route imports 
 const userRoute = require('./routes/user');
 const testRoute = require('./routes/testUser');
+const cafetariaRoute = require('./routes/cafetaria');
 
 //const variables
 const port = process.env.PORT || 3000;
@@ -35,11 +39,14 @@ async function main() {
 main();
 
 //use methods
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
+//route uses from other files
 app.use('/', userRoute);
-app.use('/user', passport.authenticate('jwt', {session: false}), testRoute);
+app.use('/user', jwt_auth, testRoute);
+app.use('/cafetaria', jwt_auth, cafetariaRoute);
 
 app.use('/home', (req, res) => {
     res.send("This is working");
