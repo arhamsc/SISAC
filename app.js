@@ -49,7 +49,7 @@ app.use('/home', (req, res) => {
 app.use(function(err, req, res, next) {
     const { statusCode = 500 } = err;
     if(!err.message) err.message = "Oh no Something Went Wrong"; 
-    res.status(statusCode).json({ err });
+    res.status(statusCode).json({ err, statusCode });
 });
 
 

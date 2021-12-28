@@ -5,21 +5,27 @@ const User = require('../../models/user');
 const JWTstrategy = require('passport-jwt').Strategy;
 const ExtractJWT = require('passport-jwt').ExtractJwt;
 
+const ExpressError = require("../error_handlers");
+
+const roleEnums = ["Student", "Faculty", "Other"];
+
 //for user registration
-passport.use('signup', new localStrategy({usernameField: 'username', passwordField: 'password'},
-    async (username, password, done) => {      
-        try {
-            
+passport.use('signup', new localStrategy({usernameField: 'username', passwordField: 'password', passReqToCallback: true},
+    async (req,username, password, done) => {      
+        try {         
             const user = await User.findOne({username: username});
             if (user) {
-                return done(null, { message: 'User Exists' });
+                return done({ message: 'User Exists' });
             }
-            const userNew = await new User({username: username, password: password});
+            if(!roleEnums.includes(req.body.role)) {
+               return done({message: "Invalid Role"})
+            }
+            const userNew = await new User({username: username, password: password, role: req.body.role, name: req.body.name});
             await userNew.save();
             return done(null, userNew, {message: "Successfully Signed up"});       
         } catch(err) {
-            console.log(err);
-            done(err);
+            console.dir(err);
+            return done(err);
         }
     }
 ));
@@ -35,7 +41,7 @@ async (username, password, done) => {
         const validate = await user.isValidPassword;
         
         if (!validate) {
-            return done(null, false, { message: 'Wrong Password' });
+            return done(null, false, { message: 'Wrong Username or Password' });
         }
         return done(null, user, { message: 'Logged in Successfully' });
     } catch(err) {
@@ -47,19 +53,15 @@ async (username, password, done) => {
 
 //validating jwt
 
-passport.use(
-    new JWTstrategy(
-      {
-        secretOrKey: process.env.SECRET,
-        jwtFromRequest: ExtractJWT.fromUrlQueryParameter('secret_token')
-      },
-      async (token, done) => {
-        try {
-          return done(null, token.user);
-        } catch (error) {
-            console.log(error);
-          done(error);
-        }
-      }
-    )
+const opts = {};
+opts.secretOrKey = process.env.SECRET;
+opts.jwtFromRequest = ExtractJWT.fromBodyField('secret_token');
+passport.use( new JWTstrategy(opts, function (jwt_payload, done) {
+    try {
+        return done(null, jwt_payload.user);
+    } catch(error) {
+        console.log(error);
+        done({message: "User is not Logged In"});
+    }
+})
 );
