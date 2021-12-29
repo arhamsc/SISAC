@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+const Rating = require('./rating');
+
 const menuItemSchema = new Schema({
     name: {
         type: String,
@@ -15,6 +17,10 @@ const menuItemSchema = new Schema({
         min: 1,
         max: 5,
     },
+    ratings: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Rating'
+    }],
     price: {
         type: Number,
         min: 1,
@@ -32,6 +38,16 @@ const menuItemSchema = new Schema({
         default: true,
     }
 });
+
+menuItemSchema.post('findOneAndDelete', async function(doc) {
+    if(doc) {
+        await Rating.deleteMany({
+            _id: {
+                $in: doc.ratings
+            }
+        })
+    }
+})
 
 const MenuItemModel = mongoose.model("MenuItem", menuItemSchema);
 

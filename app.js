@@ -19,7 +19,7 @@ require('./middleWare/auth/auth');
 //route imports 
 const userRoute = require('./routes/user');
 const testRoute = require('./routes/testUser');
-const cafetariaRoute = require('./routes/cafetaria');
+const cafetariaRoute = require('./routes/cafetaria/cafetaria');
 
 //const variables
 const port = process.env.PORT || 3000;
