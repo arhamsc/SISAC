@@ -1,5 +1,5 @@
 const passport = require('passport');
-const Rating = require('../models/rating');
+const Rating = require('../models/cafetaria/rating');
 
 
 module.exports.jwt_auth = passport.authenticate('jwt', {session: false});

@@ -1,3 +1,5 @@
 node_modules
 .env
 workspace.code-workspace
+testing.js
+seeds

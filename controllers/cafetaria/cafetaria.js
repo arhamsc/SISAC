@@ -1,5 +1,5 @@
-const MenuItem = require('../../models/menu_item');
-const Rating  = require('../../models/rating');
+const MenuItem = require('../../models/cafetaria/menu_item');
+const Rating  = require('../../models/cafetaria/rating');
 const helpers = require('../../middleWare/helpers');
 const { cloudinary } = require('../../cloudinary');
 
