@@ -20,6 +20,7 @@ require('./middleWare/auth/auth');
 const userRoute = require('./routes/user');
 const testRoute = require('./routes/testUser');
 const cafetariaRoute = require('./routes/cafetaria/cafetaria');
+const orderRoute = require('./routes/cafetaria/orders');
 
 //const variables
 const port = process.env.PORT || 3000;
@@ -46,7 +47,9 @@ app.use(express.json());
 //route uses from other files
 app.use('/', userRoute);
 app.use('/user', jwt_auth, testRoute);
+app.use('/cafetaria/orders', jwt_auth, orderRoute);
 app.use('/cafetaria', jwt_auth, cafetariaRoute);
+
 
 app.use('/home', (req, res) => {
     res.send("This is working");

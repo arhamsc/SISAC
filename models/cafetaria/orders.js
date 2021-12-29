@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const orderItemSchema = new Schema ({
+const orderItemSchema = new Schema({
     orderItem: {
         type: Schema.Types.ObjectId,
         ref: 'MenuItem',
@@ -25,8 +25,9 @@ const orderSchema = new Schema({
         enum: ['Completed', 'Pending'],
     },
     transactionId: Number,
+    createdOn: Date,
 })
 
-const OrderModel = mongoose.Model('Order', orderSchema);
+const OrderModel = mongoose.model('Order', orderSchema);
 
 module.exports = OrderModel;

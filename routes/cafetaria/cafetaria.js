@@ -7,17 +7,19 @@ const upload = multer({storage});
 
 const cafetariaController = require('../../controllers/cafetaria/cafetaria');
 
+const roleMiddleware = require('../../middleWare/cafetaria/role_handlers');
+
 router.route('/')
     .get(cafetariaController.getMenu)
-    .post(upload.single('image'), cafetariaController.newMenuItem);
+    .post(roleMiddleware.isOther, upload.single('image'), cafetariaController.newMenuItem);
 
 router.route('/:menuId')
     .get(cafetariaController.getMenuItem)
-    .patch(upload.single('image'), cafetariaController.editMenu)
-    .delete(cafetariaController.deleteMenuItem);
+    .patch(roleMiddleware.isOther, upload.single('image'), cafetariaController.editMenu)
+    .delete(roleMiddleware.isOther, cafetariaController.deleteMenuItem);
 
 router.route('/:menuId/rate')
-    .post(cafetariaController.rating)
+    .post(roleMiddleware.isStudentOrFaculty, cafetariaController.rating)
     
 
 module.exports = router;
