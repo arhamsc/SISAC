@@ -2,6 +2,7 @@ const MenuItem = require('../../models/cafetaria/menu_item');
 const Rating  = require('../../models/cafetaria/rating');
 const helpers = require('../../middleWare/helpers');
 const { cloudinary } = require('../../cloudinary');
+const {ExpressError} = require('../../middleWare/error_handlers');
 
 
 //get whole menu controller
@@ -18,6 +19,7 @@ module.exports.getMenu = async(req,res) => {
 module.exports.newMenuItem = async(req, res) => {
     try {
         const body = req.body.menuItem;
+        if(!body) throw new ExpressError("Body cannot be empty", 400);
         const newItem = await new MenuItem(body);
         newItem.imageUrl = req.file.path;
         newItem.imageFileName = req.file.filename;
