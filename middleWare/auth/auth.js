@@ -23,9 +23,9 @@ passport.use('signup', new localStrategy({usernameField: 'username', passwordFie
             const userNew = await new User({username: username, password: password, role: req.body.role, name: req.body.name});
             await userNew.save();
             return done(null, userNew, {message: "Successfully Signed up"});       
-        } catch(err) {
-            console.dir(err);
-            return done(err);
+        } catch(error) {
+            console.dir(error);
+            return done(error);
         }
     }
 ));
@@ -36,17 +36,17 @@ async (username, password, done) => {
     try {
         const user = await User.findOne({username: username});
         if (!user) {
-            return done(null, false, { message: 'User not found' });
+            return done(null,false, { message: 'User not found' });
         }
-        const validate = await user.isValidPassword;
+        const validate = await user.isValidPassword(password);
         
         if (!validate) {
             return done(null, false, { message: 'Wrong Username or Password' });
         }
         return done(null, user, { message: 'Logged in Successfully' });
-    } catch(err) {
-        console.log(error);
-        done(err);
+    } catch(error) {
+      //  console.log(error);
+         return done(error);
     }
 }));
 

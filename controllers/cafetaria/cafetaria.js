@@ -10,7 +10,7 @@ module.exports.getMenu = async(req,res) => {
         const items = await MenuItem.find({});
         res.json(items);
     } catch(e) {
-        res.json(err);
+        res.json(error);
     }
 }
 

@@ -6,11 +6,11 @@ if(process.env.NODE_ENV !== "production") {
 const express = require('express');
 const app = express();
 const mongoose = require("mongoose");
-const passport = require('passport');
 const bodyParser = require('body-parser');
 
 //helper imports
 const {jwt_auth} = require('./middleWare/helpers');
+const {handleError} = require('./middleWare/error_handlers');
 
 //unnamed requires
 require('./middleWare/auth/auth');
@@ -44,6 +44,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
+
 //route uses from other files
 app.use('/', userRoute);
 app.use('/user', jwt_auth, testRoute);
@@ -56,10 +57,11 @@ app.use('/home', (req, res) => {
 });
 
 //error handlers
-app.use(function(err, req, res, next) {
-    const { statusCode = 500 } = err;
-    if(!err.message) err.message = "Oh no Something Went Wrong"; 
-    res.status(statusCode).json({ err, statusCode });
+app.use(function(error, req, res, next) {
+    const { statusCode = 500 } =  error;
+    if(!error.message) error.message = "Oh no Something Went Wrong"; 
+    res.status(statusCode).json({ error });
+    next();
 });
 
 

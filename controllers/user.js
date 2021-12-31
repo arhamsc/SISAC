@@ -1,10 +1,13 @@
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
+const { ExpressError } = require('../middleWare/error_handlers');
 
 const User = require('../models/user');
 
 const expiryTime = 86400000;
 const expiryDate = Date.now() + expiryTime;
+
+//const expressError = module.exports('../middleWare/error_handlers.js');
 
 module.exports.signup = async function (req, res, next) {
     res.json({
@@ -15,14 +18,13 @@ module.exports.signup = async function (req, res, next) {
 
 module.exports.login = function (req, res, next) {
     passport.authenticate('login', {
-        session: false
-    }, async (err, user, info) => {
+        session: false,
+        failWithError: true
+    }, async (error, user, info) => {
         try {
-            if (err || !user) {
-                return res.status(400).json({
-                    message: 'Something is not right',
-                    user: user
-                });
+            if (error || !user) {
+                //console.log(err);
+                throw new ExpressError(info.message, 404)
             }
             req.login(user, {
                 session: false
@@ -58,7 +60,7 @@ module.exports.login = function (req, res, next) {
                     role: user.role,
                     expiresIn: expiryTime,
                     expiryDate: expiryDate,
-                    message: "Logged in successfully"
+                    message: info.message
                 });
 
 
