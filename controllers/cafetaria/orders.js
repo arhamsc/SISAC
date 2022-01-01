@@ -13,8 +13,8 @@ module.exports.getOrders = async (req, res) => {
            return  res.json({message: "There are no orders placed"})
         }
         res.json({
-            orders,
-            message: "Order fetched successfully"
+            ...orders
+            
         });
     } catch (error) {
         res.json({
@@ -65,7 +65,7 @@ module.exports.newOrder = async (req, res) => {
     }
 }
 
-//fetch a particular order
+//fetch a particular order by order Id
 module.exports.fetchOneOrder = async (req, res) => {
     try {
         const { orderId } = req.params;
@@ -73,7 +73,7 @@ module.exports.fetchOneOrder = async (req, res) => {
         if(!order) {
             return res.json({message:"Order Not found"})
         }
-        res.json({order, message: "Order fetched"})
+        res.json({...order})
     } catch(e) {
         res.json({error: e, message: "Could not get the order"})
     }
@@ -83,7 +83,7 @@ module.exports.fetchOneOrder = async (req, res) => {
 module.exports.getAllOrders = async (req,res) => {
     try {
         const orders = await Order.find({});
-        res.json({orders, message: "All orders fetched"})
+        res.json({...orders})
     } catch(error) {
         res.json({error});
     }

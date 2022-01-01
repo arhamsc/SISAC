@@ -15,6 +15,7 @@ router.route('/restaurant')
 router.route('/restaurant/:orderId')
     .delete(roleMiddleware.isOther, orderControllers.clearOrders);
 
+
 router.route('/:orderId')
     .get(roleMiddleware.isStudentOrFaculty, orderControllers.fetchOneOrder);
 
