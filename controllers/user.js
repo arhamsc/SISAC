@@ -50,8 +50,6 @@ module.exports.login = function (req, res, next) {
                     token: token,
                     expiryDate: expiryDate
                 });
-
-
                 return res.json({
                     token,
                     id: user._id,
@@ -62,10 +60,6 @@ module.exports.login = function (req, res, next) {
                     expiryDate: expiryDate,
                     message: info.message
                 });
-
-
-
-
             });
         } catch (error) {
             console.log(error);

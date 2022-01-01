@@ -24,7 +24,7 @@ passport.use('signup', new localStrategy({usernameField: 'username', passwordFie
             await userNew.save();
             return done(null, userNew, {message: "Successfully Signed up"});       
         } catch(error) {
-            console.dir(error);
+          //  console.dir(error);
             return done(error);
         }
     }
@@ -61,7 +61,8 @@ passport.use( new JWTstrategy(opts, function (jwt_payload, done) {
     try {
         return done(null, jwt_payload.user);
     } catch(error) {
-       return done({message: "User is not Logged In"});
+      // throw new ExpressError(error.message, 401);
+      return done(null, false, {message: error.message});
     }
 })
 );
