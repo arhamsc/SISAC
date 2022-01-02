@@ -1,20 +1,23 @@
 const Order = require('../../models/cafetaria/orders');
 const User = require('../../models/user');
 
+const Queue = require('../../queues');
+const q = new Queue();
+
 //retrieve orders for a specific user
 module.exports.getOrders = async (req, res) => {
     try {
         const token = req.headers.secret_token;
-        const user = await User.findOne({token});
+        const user = await User.findOne({ token });
         const orders = await Order.find({
             user: user
         });
-        if(orders.length === 0) {
-           return  res.json({message: "There are no orders placed"})
+        if (orders.length === 0) {
+            return res.json({ message: "There are no orders placed" })
         }
         res.json({
             ...orders
-            
+
         });
     } catch (error) {
         res.json({
@@ -55,13 +58,17 @@ module.exports.newOrder = async (req, res) => {
             transactionId: order.transactionId,
             createdOn: order.createdOn
         });
-        newOrder.orderItems.push(...menuItemIds)
+        newOrder.orderItems.push(...menuItemIds);
+        q.enqueue(newOrder);
+       //q.print();
+       //console.log(newOrder);
         await newOrder.save();
         res.send({
             newOrder
         });
     } catch (e) {
-        res.json({error: e});
+        console.log(e);
+        res.json({ error: e });
     }
 }
 
@@ -70,31 +77,32 @@ module.exports.fetchOneOrder = async (req, res) => {
     try {
         const { orderId } = req.params;
         const order = await Order.findById(orderId);
-        if(!order) {
-            return res.json({message:"Order Not found"})
+        if (!order) {
+            return res.json({ message: "Order Not found" })
         }
-        res.json({...order})
-    } catch(e) {
-        res.json({error: e, message: "Could not get the order"})
+        res.json({ ...order })
+    } catch (e) {
+        res.json({ error: e, message: "Could not get the order" })
     }
 }
 
 /**** Restaurant Routes****/
-module.exports.getAllOrders = async (req,res) => {
+module.exports.getAllOrders = async (req, res) => {
     try {
         const orders = await Order.find({});
-        res.json({...orders})
-    } catch(error) {
-        res.json({error});
+        res.json({ ...orders })
+    } catch (error) {
+        res.json({ error });
     }
 }
 
 module.exports.clearOrders = async (req, res) => {
     try {
-        const {orderId} = req.params;
+        const { orderId } = req.params;
         const order = await Order.findByIdAndDelete(orderId);
-        res.json({message: "Order Deleted"});
-    } catch(error) {
-        res.json({error});
+        q.dequeue();
+        res.json({ message: "Order Deleted" });
+    } catch (error) {
+        res.json({ error });
     }
 }

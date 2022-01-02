@@ -94,7 +94,7 @@ module.exports.rating = async (req, res) => {
         await newRating.save();
         await helpers.calculateAvgRating();
         await item.save();
-        // console.log(newRating, item);
+        //console.log(newRating, item);
         res.json({ message: "Rating Given" });
     } catch (e) {
         res.json({ e, message: "Rating unsuccessful" });

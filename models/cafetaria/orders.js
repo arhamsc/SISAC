@@ -24,7 +24,7 @@ const orderSchema = new Schema({
         type: String,
         enum: ['Completed', 'Pending'],
     },
-    transactionId: Number,
+    transactionId: String,
     createdOn: Date,
 })
 
