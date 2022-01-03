@@ -10,6 +10,8 @@ const orderItemSchema = new Schema({
     price: Number
 })
 
+
+
 const orderSchema = new Schema({
     user: {
         type: Schema.Types.ObjectId,
@@ -17,7 +19,14 @@ const orderSchema = new Schema({
         required: true
     },
     orderItems: [
-        orderItemSchema
+        {
+            orderItem: {
+                type: Schema.Types.ObjectId,
+                ref: 'MenuItem',
+            },
+            quantity: Number,
+            price: Number
+        }
     ],
     amount: Number,
     paymentStatus: {

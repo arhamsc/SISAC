@@ -1,3 +1,4 @@
+const { ExpressError } = require('../../middleWare/error_handlers');
 const Order = require('../../models/cafetaria/orders');
 const User = require('../../models/user');
 
@@ -60,8 +61,8 @@ module.exports.newOrder = async (req, res) => {
         });
         newOrder.orderItems.push(...menuItemIds);
         q.enqueue(newOrder);
-       //q.print();
-       //console.log(newOrder);
+        //q.print();
+        //console.log(newOrder);
         await newOrder.save();
         res.send({
             newOrder
@@ -87,10 +88,15 @@ module.exports.fetchOneOrder = async (req, res) => {
 }
 
 /**** Restaurant Routes****/
-module.exports.getAllOrders = async (req, res) => {
+module.exports.getAllOrders = async (req, res, next) => {
     try {
-        const orders = await Order.find({});
+        const orders = await Order.find({}).populate('user', '_id name username role');
+        //console.log(orders)
+       if(orders.length === 0) {
+        next(new ExpressError('No Orders', 404));
+       } else {
         res.json({ ...orders })
+       }
     } catch (error) {
         res.json({ error });
     }
