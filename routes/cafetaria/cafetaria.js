@@ -20,6 +20,9 @@ router.route('/:menuId')
 
 router.route('/:menuId/rate')
     .post(roleMiddleware.isStudentOrFaculty, cafetariaController.rating)
+
+router.route('/:menuId/isAvailable')
+    .post(roleMiddleware.isOther, cafetariaController.updateIsAvailable);
     
 
 module.exports = router;

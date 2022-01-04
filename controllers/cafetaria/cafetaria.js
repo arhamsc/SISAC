@@ -9,7 +9,7 @@ const { ExpressError } = require('../../middleWare/error_handlers');
 module.exports.getMenu = async (req, res) => {
     try {
         const items = await MenuItem.find({});
-        res.json({...items});
+        res.json({ ...items });
     } catch (e) {
         res.json(e);
     }
@@ -98,6 +98,22 @@ module.exports.rating = async (req, res) => {
         res.json({ message: "Rating Given" });
     } catch (e) {
         res.json({ e, message: "Rating unsuccessful" });
+    }
+}
+
+//Route for updating only the isAvailable status
+module.exports.updateIsAvailable = async (req, res, next) => {
+    try {
+        const { menuId } = req.params;
+        const { isAvailable } = req.body;
+        //  const menuItem = await MenuItem.findOneAndUpdate({ _id: menuId }, { isAvailable : isAvailable});
+       const item = await MenuItem.findById(menuId);
+       item.isAvailable = isAvailable;
+       await item.save()
+    
+        res.json({ message: "Status Updated"});
+    } catch (error) {
+        next(new ExpressError(error.message));
     }
 }
 
