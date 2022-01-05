@@ -13,11 +13,11 @@ router.route('/availability')
 router.route('/availability/:itemId')
     .patch(stationaryController.updateAvailability)
 
-router.route('/bookmaterial')
+router.route('/booksmaterial')
     .get(stationaryController.getBooks)
     .post(upload.single('image'), stationaryController.addBook)
 
-router.route('/bookmaterial/:bookId')
+router.route('/booksmaterial/:bookId')
     .patch(upload.single('image'), stationaryController.editBook)
     .delete(stationaryController.deleteBook)
 

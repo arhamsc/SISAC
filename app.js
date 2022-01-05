@@ -51,7 +51,7 @@ app.use('/', userRoute);
 app.use('/user', jwt_auth, testRoute);
 app.use('/cafetaria/orders', jwt_auth, orderRoute);
 app.use('/cafetaria', jwt_auth, cafetariaRoute);
-app.use('/stationary', stationaryRoute);
+app.use('/stationary', jwt_auth, stationaryRoute);
 
 
 app.use('/home', (req, res) => {
