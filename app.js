@@ -25,6 +25,7 @@ const stationaryRoute = require('./routes/stationary/stationary');
 
 //const variables
 const port = process.env.PORT || 3000;
+//const dbUrl = process.env.DB_URL;
 const dbUrl = 'mongodb://localhost:27017/SISAC';
 
 //mongoose database setup

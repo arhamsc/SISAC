@@ -1,16 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const orderItemSchema = new Schema({
-    orderItem: {
-        type: Schema.Types.ObjectId,
-        ref: 'MenuItem',
-    },
-    quantity: Number,
-    price: Number
-})
-
-
+const OrderItem = require('./order_items');
 
 const orderSchema = new Schema({
     user: {
@@ -20,12 +11,8 @@ const orderSchema = new Schema({
     },
     orderItems: [
         {
-            orderItem: {
-                type: Schema.Types.ObjectId,
-                ref: 'MenuItem',
-            },
-            quantity: Number,
-            price: Number
+            type: Schema.Types.ObjectId,
+            ref: 'OrderItem'
         }
     ],
     amount: Number,
@@ -36,6 +23,16 @@ const orderSchema = new Schema({
     transactionId: String,
     createdOn: Date,
 })
+
+orderSchema.post("findOneAndDelete", async function (doc) {
+  if (doc) {
+    await OrderItem.deleteMany({
+      _id: {
+        $in: doc.orderItems,
+      },
+    });
+  }
+});
 
 const OrderModel = mongoose.model('Order', orderSchema);
 
