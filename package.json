@@ -4,8 +4,8 @@
   "description": "SISAC application backend api",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js",
+    "test": "nodemon app.js"
   },
   "repository": {
     "type": "git",

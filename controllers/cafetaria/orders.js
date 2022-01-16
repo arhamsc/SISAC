@@ -13,6 +13,13 @@ module.exports.getOrders = async (req, res) => {
     const user = await User.findOne({ token });
     const orders = await Order.find({
       user: user,
+    }).populate({
+      path: "orderItems",
+      populate: {
+        path: "orderedItem",
+        select: { _id: 1, name: 1, imageUrl: 1, isAvailable: 1 },
+        model: "MenuItem",
+      },
     });
     if (orders.length === 0) {
       return res.json({ message: "There are no orders placed" });
@@ -31,10 +38,10 @@ module.exports.getOrders = async (req, res) => {
 //*send the body in orderItem[id] and total order as order[]
 /* 
 Sample Postman request:
-orderItem[][_id]:61cc818c6206ad88a23ecb2f
+orderItem[][orderedItem]:61cc818c6206ad88a23ecb2f
 orderItem[][quantity]:3
 orderItem[][price]:33
-orderItem[1][_id]:61cc3c0b267ba6bba93c4d4a
+orderItem[1][orderedItem]:61cc3c0b267ba6bba93c4d4a
 orderItem[1][quantity]:5
 orderItem[1][price]:100
 order[amount]:1000
