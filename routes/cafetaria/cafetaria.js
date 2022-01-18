@@ -13,6 +13,9 @@ router.route('/')
     .get(cafetariaController.getMenu)
     .post(roleMiddleware.isOther, upload.single('image'), cafetariaController.newMenuItem);
 
+router.route("/recommendation")
+    .get(cafetariaController.getRecommendation);
+
 router.route('/:menuId')
     .get(cafetariaController.getMenuItem)
     .patch(roleMiddleware.isOther, upload.single('image'), cafetariaController.editMenu)

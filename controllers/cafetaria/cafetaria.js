@@ -3,7 +3,7 @@ const Rating = require('../../models/cafetaria/rating');
 const helpers = require('../../middleWare/helpers');
 const { cloudinary } = require('../../cloudinary');
 const { ExpressError } = require('../../middleWare/error_handlers');
-
+const RecommendedItem = require("../../models/cafetaria/recommended_item");
 
 //get whole menu controller
 module.exports.getMenu = async (req, res) => {
@@ -117,3 +117,19 @@ module.exports.updateIsAvailable = async (req, res, next) => {
     }
 }
 
+/* Todays Recommendation Route */
+
+module.exports.getRecommendation = async(req, res, next) => {
+    try {
+        await helpers.calculateRecommendation();
+        const recoms = await RecommendedItem.find({});
+        //* IMP: THis is the way to send custom JSON with only objects
+        const recomsObj = {};
+        for(var i in recoms) {
+            recomsObj[recoms[i]._id] = {...recoms[i]._doc};
+        }
+        res.json(recomsObj);
+    } catch (error) {
+        next(new ExpressError(error.message))
+    }
+}
