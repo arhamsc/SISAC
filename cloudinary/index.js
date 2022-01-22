@@ -1,5 +1,5 @@
 const cloudinary = require("cloudinary").v2;
-const {CloudinaryStorage} = require('multer-storage-cloudinary');
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -10,9 +10,9 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
     cloudinary,
     params: {
-        folder: 'SISAC',
-        allowedFormats: ['jpeg', 'png', 'jpg']
-    }
-})
+        folder: "SISAC",
+        allowedFormats: ["jpeg", "png", "jpg"],
+    },
+});
 
-module.exports = {cloudinary, storage};
+module.exports = { cloudinary, storage };

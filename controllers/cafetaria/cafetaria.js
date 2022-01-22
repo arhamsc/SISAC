@@ -1,8 +1,8 @@
-const MenuItem = require('../../models/cafetaria/menu_item');
-const Rating = require('../../models/cafetaria/rating');
-const helpers = require('../../middleWare/helpers');
-const { cloudinary } = require('../../cloudinary');
-const { ExpressError } = require('../../middleWare/error_handlers');
+const MenuItem = require("../../models/cafetaria/menu_item");
+const Rating = require("../../models/cafetaria/rating");
+const helpers = require("../../middleWare/helpers.js");
+const { cloudinary } = require("../../cloudinary");
+const { ExpressError } = require("../../middleWare/error_handlers");
 const RecommendedItem = require("../../models/cafetaria/recommended_item");
 
 //get whole menu controller
@@ -13,7 +13,7 @@ module.exports.getMenu = async (req, res) => {
     } catch (e) {
         res.json(e);
     }
-}
+};
 
 //*send json in type of menuItem[name]
 module.exports.newMenuItem = async (req, res) => {
@@ -28,7 +28,7 @@ module.exports.newMenuItem = async (req, res) => {
     } catch (error) {
         res.json(error);
     }
-}
+};
 
 //get single item
 module.exports.getMenuItem = async (req, res) => {
@@ -39,7 +39,7 @@ module.exports.getMenuItem = async (req, res) => {
     } catch (e) {
         res.json({ e, message: "Item Not Found" });
     }
-}
+};
 
 //editing menuItem PATCH Request
 module.exports.editMenu = async (req, res) => {
@@ -47,19 +47,23 @@ module.exports.editMenu = async (req, res) => {
         const { menuId } = req.params;
         const body = req.body.menuItem;
         const oldItem = await MenuItem.findById(menuId);
-        const item = await MenuItem.findByIdAndUpdate(menuId, { ...body }, { new: true });
+        const item = await MenuItem.findByIdAndUpdate(
+            menuId,
+            { ...body },
+            { new: true }
+        );
         if (req.file) {
             await cloudinary.uploader.destroy(oldItem.imageFileName);
             item.imageUrl = req.file.path;
             item.imageFileName = req.file.filename;
         }
         await item.save();
-        res.json({ item, message: "Successfully Edited" })
+        res.json({ item, message: "Successfully Edited" });
         console.log(item);
     } catch (e) {
         res.json({ e });
     }
-}
+};
 
 //deleting menu route
 module.exports.deleteMenuItem = async (req, res) => {
@@ -71,7 +75,7 @@ module.exports.deleteMenuItem = async (req, res) => {
     } catch (e) {
         res.json({ e, message: "Request Failed" });
     }
-}
+};
 
 //rating route, //*send the body as key of "rating" and the value should be in between 1 an 5
 module.exports.rating = async (req, res) => {
@@ -82,15 +86,13 @@ module.exports.rating = async (req, res) => {
         //console.log(newRating);
         const item = await MenuItem.findById(menuId);
         item.ratings.push(newRating);
-        item.populate(
-            {
-                path: 'ratings.rating',
-                populate: {
-                    path: 'rating',
-                    model: 'Rating'
-                }
+        item.populate({
+            path: "ratings.rating",
+            populate: {
+                path: "rating",
+                model: "Rating",
             },
-        );
+        });
         await newRating.save();
         await helpers.calculateAvgRating();
         await item.save();
@@ -99,7 +101,7 @@ module.exports.rating = async (req, res) => {
     } catch (e) {
         res.json({ e, message: "Rating unsuccessful" });
     }
-}
+};
 
 //Route for updating only the isAvailable status
 module.exports.updateIsAvailable = async (req, res, next) => {
@@ -107,29 +109,29 @@ module.exports.updateIsAvailable = async (req, res, next) => {
         const { menuId } = req.params;
         const { isAvailable } = req.body;
         //  const menuItem = await MenuItem.findOneAndUpdate({ _id: menuId }, { isAvailable : isAvailable});
-       const item = await MenuItem.findById(menuId);
-       item.isAvailable = isAvailable;
-       await item.save()
-    
-        res.json({ message: "Status Updated"});
+        const item = await MenuItem.findById(menuId);
+        item.isAvailable = isAvailable;
+        await item.save();
+
+        res.json({ message: "Status Updated" });
     } catch (error) {
         next(new ExpressError(error.message));
     }
-}
+};
 
 /* Todays Recommendation Route */
 
-module.exports.getRecommendation = async(req, res, next) => {
+module.exports.getRecommendation = async (req, res, next) => {
     try {
         await helpers.calculateRecommendation();
         const recoms = await RecommendedItem.find({});
         //* IMP: THis is the way to send custom JSON with only objects
         const recomsObj = {};
-        for(var i in recoms) {
-            recomsObj[recoms[i]._id] = {...recoms[i]._doc};
+        for (var i in recoms) {
+            recomsObj[recoms[i]._id] = { ...recoms[i]._doc };
         }
         res.json(recomsObj);
     } catch (error) {
-        next(new ExpressError(error.message))
+        next(new ExpressError(error.message));
     }
-}
+};

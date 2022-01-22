@@ -1,12 +1,12 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-router.get('/profile',(req, res, next) => {
+router.get("/profile", (req, res, next) => {
     res.json({
-        message: 'You made it to the secure route',
+        message: "You made it to the secure route",
         user: req.user,
-        token: req.body.secret_token
-      });
+        token: req.body.secret_token,
+    });
 });
 
 module.exports = router;

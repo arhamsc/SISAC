@@ -1,31 +1,41 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const multer = require('multer');
-const {storage} = require('../../cloudinary');
-const upload = multer({storage});
+const multer = require("multer");
+const { storage } = require("../../cloudinary");
+const upload = multer({ storage });
 
-const cafetariaController = require('../../controllers/cafetaria/cafetaria');
+const cafetariaController = require("../../controllers/cafetaria/cafetaria");
 
-const roleMiddleware = require('../../middleWare/cafetaria/role_handlers');
+const roleMiddleware = require("../../middleWare/cafetaria/role_handlers");
 
-router.route('/')
+router
+    .route("/")
     .get(cafetariaController.getMenu)
-    .post(roleMiddleware.isOther, upload.single('image'), cafetariaController.newMenuItem);
+    .post(
+        roleMiddleware.isOther,
+        upload.single("image"),
+        cafetariaController.newMenuItem
+    );
 
-router.route("/recommendation")
-    .get(cafetariaController.getRecommendation);
+router.route("/recommendation").get(cafetariaController.getRecommendation);
 
-router.route('/:menuId')
+router
+    .route("/:menuId")
     .get(cafetariaController.getMenuItem)
-    .patch(roleMiddleware.isOther, upload.single('image'), cafetariaController.editMenu)
+    .patch(
+        roleMiddleware.isOther,
+        upload.single("image"),
+        cafetariaController.editMenu
+    )
     .delete(roleMiddleware.isOther, cafetariaController.deleteMenuItem);
 
-router.route('/:menuId/rate')
-    .post(roleMiddleware.isStudentOrFaculty, cafetariaController.rating)
+router
+    .route("/:menuId/rate")
+    .post(roleMiddleware.isStudentOrFaculty, cafetariaController.rating);
 
-router.route('/:menuId/isAvailable')
+router
+    .route("/:menuId/isAvailable")
     .post(roleMiddleware.isOther, cafetariaController.updateIsAvailable);
-    
 
 module.exports = router;
