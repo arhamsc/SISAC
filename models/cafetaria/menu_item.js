@@ -16,6 +16,7 @@ const menuItemSchema = new Schema({
         type: Number,
         min: 1,
         max: 5,
+        default: 3,
     },
     ratings: [
         {

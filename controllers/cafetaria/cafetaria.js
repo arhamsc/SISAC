@@ -59,7 +59,6 @@ module.exports.editMenu = async (req, res) => {
         }
         await item.save();
         res.json({ item, message: "Successfully Edited" });
-        console.log(item);
     } catch (e) {
         res.json({ e });
     }
