@@ -6,5 +6,10 @@ class ExpressError extends Error {
     }
 }
 
+const catchAsync = func => {
+    return (req, res, next, ) => {
+        func(req, res, next).catch((error) => {return next(error.message)});
+    }
+}
 
-module.exports = { ExpressError };
+module.exports = { ExpressError, catchAsync };

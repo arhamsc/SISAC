@@ -5,7 +5,7 @@ const User = require("../../models/user");
 const JWTstrategy = require("passport-jwt").Strategy;
 const ExtractJWT = require("passport-jwt").ExtractJwt;
 
-const roleEnums = ["Student", "Faculty", "Other"];
+const roleEnums = ["Admin", "Student", "Faculty", "Stationary", "Other"];
 
 //for user registration
 passport.use(
@@ -36,7 +36,6 @@ passport.use(
                     message: "Successfully Signed up",
                 });
             } catch (error) {
-                //  console.dir(error);
                 return done(error);
             }
         }
@@ -63,7 +62,6 @@ passport.use(
                 }
                 return done(null, user, { message: "Logged in Successfully" });
             } catch (error) {
-                //  console.log(error);
                 return done(error);
             }
         }
@@ -71,17 +69,14 @@ passport.use(
 );
 
 //validating jwt
-
 const opts = {};
 opts.secretOrKey = process.env.SECRET;
-// opts.jwtFromRequest = ExtractJWT.fromBodyField('secret_token') ;
 opts.jwtFromRequest = ExtractJWT.fromHeader("secret_token");
 passport.use(
     new JWTstrategy(opts, function (jwt_payload, done) {
         try {
             return done(null, jwt_payload.user);
         } catch (error) {
-            // throw new ExpressError(error.message, 401);
             return done(null, false, { message: error.message });
         }
     })

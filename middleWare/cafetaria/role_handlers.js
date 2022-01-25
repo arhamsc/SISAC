@@ -55,6 +55,19 @@ module.exports.isStudentOrFaculty = async (req, res, next) => {
     }
 };
 
+module.exports.isStationary = async(req, res, next) => {
+    try {
+        const role = await roleFinder(req, res, next);
+        if (role === "Stationary") {
+            return next();
+        } else {
+            next(new ExpressError("Not Stationary Role", 404));
+        }
+    } catch (error) {
+        next(new ExpressError("Error Auth", 401));
+    }
+}
+
 module.exports.isOther = async (req, res, next) => {
     try {
         const role = await roleFinder(req, res, next);

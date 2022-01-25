@@ -7,11 +7,12 @@ const upload = multer({ storage });
 
 const cafetariaController = require("../../controllers/cafetaria/cafetaria");
 
+const {catchAsync} = require('../../middleWare/error_handlers');
 const roleMiddleware = require("../../middleWare/cafetaria/role_handlers");
 
 router
     .route("/")
-    .get(cafetariaController.getMenu)
+    .get(catchAsync(cafetariaController.getMenu))
     .post(
         roleMiddleware.isOther,
         upload.single("image"),
