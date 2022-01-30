@@ -17,14 +17,15 @@ module.exports.isAdmin = async (req, res, next) => {
 module.exports.isStudent = async (req, res, next) => {
     try {
         const role = await roleFinder(req, res, next);
-        if (role == null) {
+        if (role === null) {
             next(new ExpressError("Error in authenticating", 401));
         }
-        if (role === "Student") {
-            return next();
-        } else {
-            next(new ExpressError("Not Student User", 401));
-        }
+        return role === "Student"
+            ? next()
+            : res.json({
+                  message: "Not a Student",
+                  statusCode: 401,
+              });
     } catch (error) {
         next(new ExpressError("Authentication Error", 401));
     }
@@ -33,14 +34,15 @@ module.exports.isStudent = async (req, res, next) => {
 module.exports.isFaculty = async (req, res, next) => {
     try {
         const role = await roleFinder(req, res, next);
-        if (role == null) {
+        if (role === null) {
             next(new ExpressError("Error in authenticating", 401));
         }
-        if (role === "Faculty") {
-            return next();
-        } else {
-            next(new ExpressError("Not Faculty User", 401));
-        }
+        return role === "Faculty"
+            ? next()
+            : res.json({
+                  message: "Not a Faculty",
+                  statusCode: 401,
+              });
     } catch (error) {
         next(new ExpressError("Authentication Error", 401));
     }
@@ -49,11 +51,12 @@ module.exports.isFaculty = async (req, res, next) => {
 module.exports.isStudentOrFaculty = async (req, res, next) => {
     try {
         const role = await roleFinder(req, res, next);
-        if (role === "Student" || role === "Faculty") {
-            return next();
-        } else {
-            next(new ExpressError("Not Student or Faculty User", 401));
-        }
+        return role === "Student" || role === "Faculty"
+            ? next()
+            : res.json({
+                  message: "Not a Student or Faculty",
+                  statusCode: 401,
+              });
     } catch (error) {
         next(new ExpressError("Authentication Error", 401));
     }
@@ -75,11 +78,12 @@ module.exports.isStationary = async (req, res, next) => {
 module.exports.isOther = async (req, res, next) => {
     try {
         const role = await roleFinder(req, res, next);
-        if (role === "Other") {
-            return next();
-        } else {
-            next(new ExpressError("Not Restaurant User", 401));
-        }
+        return role === "Other"
+            ? next()
+            : res.json({
+                  message: "Not a Other",
+                  statusCode: 401,
+              });
     } catch (error) {
         next(new ExpressError("Authentication Error", 401));
     }
