@@ -4,7 +4,7 @@ const User = require("../../models/user");
 module.exports.isStudent = async (req, res, next) => {
     try {
         const role = await roleFinder(req, res, next);
-        if (role == null) {
+        if (role === null) {
             next(new ExpressError("Error in authenticating", 401));
         }
         if (role === "Student") {
@@ -23,7 +23,7 @@ module.exports.isStudent = async (req, res, next) => {
 module.exports.isFaculty = async (req, res, next) => {
     try {
         const role = await roleFinder(req, res, next);
-        if (role == null) {
+        if (role === null) {
             next(new ExpressError("Error in authenticating", 401));
         }
         if (role === "Faculty") {
