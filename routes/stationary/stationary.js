@@ -5,13 +5,15 @@ const multer = require("multer");
 const { storage } = require("../../cloudinary");
 const upload = multer({ storage });
 
+const roleHandler = require("../../middleWare/cafetaria/role_handlers");
+
 const stationaryController = require("../../controllers/stationary/stationary");
 
 router.route("/availability").get(stationaryController.getAvailability);
 
 router
     .route("/availability/:itemId")
-    .patch(stationaryController.updateAvailability);
+    .patch(roleHandler.isStationary, stationaryController.updateAvailability);
 
 router
     .route("/booksmaterial")

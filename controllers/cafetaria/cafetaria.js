@@ -47,7 +47,7 @@ module.exports.editMenu = async (req, res, next) => {
         const { menuId } = req.params;
         const body = req.body.menuItem;
         const oldItem = await MenuItem.findById(menuId);
-        if (oldItem) {
+        if (!oldItem) {
             return next(new ExpressError("Item not found", 404));
         }
         const item = await MenuItem.findByIdAndUpdate(
