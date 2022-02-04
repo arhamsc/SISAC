@@ -135,6 +135,6 @@ module.exports.clearOrders = async (req, res, next) => {
     q.dequeue();
     return res.json({ message: "Order Deleted" });
   } catch (error) {
-    next(new ExpressError("Failed to delete the order.", 400));
+    return next(new ExpressError("Failed to delete the order.", 400));
   }
 };

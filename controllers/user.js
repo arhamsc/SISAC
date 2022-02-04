@@ -28,7 +28,7 @@ module.exports.login = function (req, res, next) {
     (error, user, info) => {
       try {
         if (error || !user) {
-          throw new ExpressError(info.message, 404);
+          next(new ExpressError(info.message, 404));
         }
         req.login(
           user,
