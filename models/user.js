@@ -19,10 +19,11 @@ const userSchema = new Schema({
     },
     role: {
         type: String,
-        require: [true, "Role is required"],
+        required: [true, "Role is required"],
         enum: ["Admin", "Student", "Faculty", "Stationary", "Other"],
     },
     token: String,
+    refreshToken: String,
     expiryDate: Number,
 });
 

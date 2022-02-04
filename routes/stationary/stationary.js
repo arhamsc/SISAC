@@ -12,27 +12,28 @@ const stationaryController = require("../../controllers/stationary/stationary");
 router.route("/availability").get(stationaryController.getAvailability);
 
 router
-    .route("/availability/:itemId")
-    .patch(roleHandler.isStationary, stationaryController.updateAvailability);
+  .route("/availability/:itemId")
+  .patch(roleHandler.isStationary, stationaryController.updateAvailability);
 
 router
-    .route("/booksmaterial")
-    .get(stationaryController.getBooks)
-    .post(upload.single("image"), stationaryController.addBook);
+  .route("/booksmaterial")
+  .get(stationaryController.getBooks)
+  .post(upload.single("image"), stationaryController.addBook);
 
 router
-    .route("/booksmaterial/:bookId")
-    .patch(upload.single("image"), stationaryController.editBook)
-    .delete(stationaryController.deleteBook);
+  .route("/booksmaterial/:bookId")
+  .patch(upload.single("image"), stationaryController.editBook)
+  .delete(stationaryController.deleteBook);
+
 
 router
-    .route("/availablematerial")
-    .get(stationaryController.getAllMaterials)
-    .post(upload.single("image"), stationaryController.addMaterial);
+  .route("/availablematerial")
+  .get(stationaryController.getAllMaterials)
+  .post(upload.single("image"), stationaryController.addMaterial);
 
 router
-    .route("/availablematerial/:materialId")
-    .patch(upload.single("image"), stationaryController.editMaterial)
-    .delete(stationaryController.deleteMaterial);
+  .route("/availablematerial/:materialId")
+  .patch(upload.single("image"), stationaryController.editMaterial)
+  .delete(stationaryController.deleteMaterial);
 
 module.exports = router;

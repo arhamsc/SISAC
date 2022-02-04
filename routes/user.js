@@ -5,11 +5,13 @@ const passport = require("passport");
 const userController = require("../controllers/user");
 
 router.post(
-    "/signup",
-    passport.authenticate("signup", { session: false }),
-    userController.signup
+  "/signup",
+  passport.authenticate("signup", { session: false }),
+  userController.signup
 );
 
 router.post("/login", userController.login);
+
+router.post("/refreshToken", userController.refreshTokenGeneration);
 
 module.exports = router;

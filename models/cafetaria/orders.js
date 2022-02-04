@@ -18,7 +18,7 @@ const orderSchema = new Schema({
     amount: Number,
     paymentStatus: {
         type: String,
-        enum: ["Completed", "Pending"],
+        enum: ["Completed", "Pending", "Failed"],
     },
     transactionId: String,
     createdOn: Date,

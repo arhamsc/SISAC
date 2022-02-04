@@ -9,63 +9,63 @@ const roleEnums = ["Admin", "Student", "Faculty", "Stationary", "Other"];
 
 //for user registration
 passport.use(
-    "signup",
-    new localStrategy(
-        {
-            usernameField: "username",
-            passwordField: "password",
-            passReqToCallback: true,
-        },
-        async (req, username, password, done) => {
-            try {
-                const user = await User.findOne({ username: username });
-                if (user) {
-                    return done({ message: "User Exists" });
-                }
-                if (!roleEnums.includes(req.body.role)) {
-                    return done({ message: "Invalid Role" });
-                }
-                const userNew = await new User({
-                    username: username,
-                    password: password,
-                    role: req.body.role,
-                    name: req.body.name,
-                });
-                await userNew.save();
-                return done(null, userNew, {
-                    message: "Successfully Signed up",
-                });
-            } catch (error) {
-                return done(error);
-            }
+  "signup",
+  new localStrategy(
+    {
+      usernameField: "username",
+      passwordField: "password",
+      passReqToCallback: true,
+    },
+    async (req, username, password, done) => {
+      try {
+        const user = await User.findOne({ username: username });
+        if (user) {
+          return done({ message: "User Exists" });
         }
-    )
+        if (!roleEnums.includes(req.body.role)) {
+          return done({ message: "Invalid Role" });
+        }
+        const userNew = await new User({
+          username: username,
+          password: password,
+          role: req.body.role,
+          name: req.body.name,
+        });
+        await userNew.save();
+        return done(null, userNew, {
+          message: "Successfully Signed up",
+        });
+      } catch (error) {
+        return done(error);
+      }
+    }
+  )
 );
 
 //for user login
 passport.use(
-    "login",
-    new localStrategy(
-        { usernameField: "username", passwordField: "password" },
-        async (username, password, done) => {
-            try {
-                const user = await User.findOne({ username: username });
-                if (!user) {
-                    return done(null, false, { message: "User not found" });
-                }
-                const validate = await user.isValidPassword(password);
-
-                if (!validate) {
-                    return done(null, false, {
-                        message: "Wrong Username or Password",
-                    });
-                }
-                return done(null, user, { message: "Logged in Successfully" });
-            } catch (error) {
-                return done(error);
-            }
+  "login",
+  new localStrategy(
+    { usernameField: "username", passwordField: "password" },
+    async (username, password, done) => {
+      try {
+        const user = await User.findOne({ username: username });
+        if (!user) {
+          return done(null, false, { message: "User not found" });
         }
-    )
+        const validate = await user.isValidPassword(password);
+
+        if (!validate) {
+          return done(null, false, {
+            message: "Wrong Username or Password",
+          });
+        }
+        return done(null, user, { message: "Logged in Successfully" });
+      } catch (error) {
+        return done(error);
+      }
+    }
+  )
 );
 
 //validating jwt
@@ -73,11 +73,17 @@ const opts = {};
 opts.secretOrKey = process.env.SECRET;
 opts.jwtFromRequest = ExtractJWT.fromHeader("secret_token");
 passport.use(
-    new JWTstrategy(opts, function (jwt_payload, done) {
-        try {
-            return done(null, jwt_payload.user);
-        } catch (error) {
-            return done(null, false, { message: error.message });
-        }
-    })
+  new JWTstrategy(opts, async function (jwt_payload, done) {
+    console.log(jwt_payload);
+    try {
+      const user = await User.findById(jwt_payload.user._id);
+      console.log(user);
+      if (user.expiryDate < Date.now()) {
+        return done(null, false);
+      }
+      return done(null, jwt_payload.user);
+    } catch (error) {
+      return done(null, false, { message: error.message });
+    }
+  })
 );
