@@ -73,11 +73,9 @@ const opts = {};
 opts.secretOrKey = process.env.SECRET;
 opts.jwtFromRequest = ExtractJWT.fromHeader("secret_token");
 passport.use(
-  new JWTstrategy(opts, async function (jwt_payload, done) {
-    console.log(jwt_payload);
+  new JWTstrategy(opts, async (jwt_payload, done) => {
     try {
       const user = await User.findById(jwt_payload.user._id);
-      console.log(user);
       if (user.expiryDate < Date.now()) {
         return done(null, false);
       }

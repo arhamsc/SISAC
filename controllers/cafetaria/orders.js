@@ -25,7 +25,7 @@ module.exports.getOrders = async (req, res, next) => {
     if (orders.length === 0) {
       return res.json({ message: "There are no orders placed" });
     }
-    res.json({
+    return res.json({
       ...orders,
     });
   } catch (error) {
@@ -81,7 +81,7 @@ module.exports.newOrder = async (req, res, next) => {
     //q.enqueue(newOrder);
     //q.print();
     await newOrder.save();
-    res.send({
+    return res.send({
       message: "Order placed successfully",
     });
   } catch (e) {
@@ -98,7 +98,7 @@ module.exports.fetchOneOrder = async (req, res, next) => {
     if (!order) {
       return res.json({ message: "Order Not found" });
     }
-    res.json({ ...order });
+    return res.json({ ...order });
   } catch (e) {
     next(new ExpressError("Failed to fetch order.", 400));
   }
@@ -121,7 +121,7 @@ module.exports.getAllOrders = async (req, res, next) => {
     if (orders.length === 0) {
       next(new ExpressError("No Orders", 404));
     } else {
-      res.json({ ...orders });
+      return res.json({ ...orders });
     }
   } catch (error) {
     next(new ExpressError("Failed to fetch orders.", 400));
@@ -133,7 +133,7 @@ module.exports.clearOrders = async (req, res, next) => {
     const { orderId } = req.params;
     await Order.findByIdAndDelete(orderId);
     q.dequeue();
-    res.json({ message: "Order Deleted" });
+    return res.json({ message: "Order Deleted" });
   } catch (error) {
     next(new ExpressError("Failed to delete the order.", 400));
   }

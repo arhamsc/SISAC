@@ -11,7 +11,7 @@ module.exports = { expiryDate };
 
 //const expressError = module.exports('../middleWare/error_handlers.js');
 
-module.exports.signup = async function (req, res) {
+module.exports.signup = function (req, res) {
   res.json({
     user: req.user,
     message: res.message,
@@ -25,7 +25,7 @@ module.exports.login = function (req, res, next) {
       session: false,
       failWithError: true,
     },
-    async (error, user, info) => {
+    (error, user, info) => {
       try {
         if (error || !user) {
           throw new ExpressError(info.message, 404);
@@ -35,8 +35,8 @@ module.exports.login = function (req, res, next) {
           {
             session: false,
           },
-          async (error) => {
-            if (error) return res.send(error);
+          async (err) => {
+            if (err) return res.send(err);
             const body = {
               _id: user._id,
               username: user.username,
@@ -52,8 +52,8 @@ module.exports.login = function (req, res, next) {
               }
             );
 
-            let refreshToken;
-            user.refreshToken != null || ""
+            let refreshToken = '';
+            user.refreshToken !== null || ""
               ? (refreshToken = user.refreshToken)
               : refreshToken = jwt.sign({ user: body }, process.env.REFRESH_SECRET);
             await User.updateOne(
@@ -80,9 +80,9 @@ module.exports.login = function (req, res, next) {
             });
           }
         );
-      } catch (error) {
-        console.log(error);
-        return next(error);
+      } catch (err) {
+
+        return next(err);
       }
     }
   )(req, res);
@@ -93,7 +93,7 @@ module.exports.refreshTokenGeneration = async (req, res, next) => {
     const { refreshToken } = req.body;
     const user = await User.findOne({ refreshToken });
     if (user.length === 0) return next(new ExpressError("User not found", 404));
-    let token;
+    let token = '';
     if (user.expiryDate > Date.now()) {
       token = user.token;
     } else {
@@ -111,7 +111,7 @@ module.exports.refreshTokenGeneration = async (req, res, next) => {
         { token: token, expiryDate: newExpiryDate }
       );
     }
-    res.json({
+    return res.json({
       token,
       refreshToken,
       id: user._id,

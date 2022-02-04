@@ -11,10 +11,11 @@ module.exports.jwt_auth = passport.authenticate("jwt", {
 //Custom Response with the Key as ID
 module.exports.objectResponseWIthIdKey = (objectData) => {
   const resObj = {};
-  for (var i in objectData) {
-    resObj[objectData[i]._id] = { ...objectData[i]._doc };
+  for (let i in objectData) {
+    if(Object.keys(objectData).length > 0) {
+      resObj[objectData[i]._id] = { ...objectData[i]._doc };
+    }
   }
-
   return resObj;
 };
 
