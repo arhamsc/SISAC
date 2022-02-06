@@ -78,7 +78,7 @@ module.exports.login = (req, res, next) => {
               name: user.name,
               role: user.role,
               expiresIn: expiryTime,
-              expiryDate: expiryDate,
+              expiryDate,
               message: info.message,
             });
           },
@@ -110,7 +110,7 @@ module.exports.refreshTokenGeneration = async (req, res, next) => {
       const newExpiryDate = Date.now() + expiryTime;
       await User.findOneAndUpdate(
         { refreshToken },
-        { token: token, expiryDate: newExpiryDate },
+        { token, expiryDate: newExpiryDate },
       );
     }
     return res.json({
@@ -121,10 +121,10 @@ module.exports.refreshTokenGeneration = async (req, res, next) => {
       name: user.name,
       role: user.role,
       expiresIn: expiryTime,
-      expiryDate: expiryDate,
+      expiryDate,
     });
   } catch (_) {
-    next(new ExpressError('Failed to generate refresh token'));
+    return next(new ExpressError('Failed to generate refresh token'));
   }
 };
 

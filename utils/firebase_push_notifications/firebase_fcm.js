@@ -24,11 +24,11 @@ module.exports.sendPushNotification = async (
 
       // },
       notification: {
-        title: title,
+        title,
         body: bodyMessage,
       },
       android: {
-        priority: priority,
+        priority,
       },
       token: deviceToken,
     };
