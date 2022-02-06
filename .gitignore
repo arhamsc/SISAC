@@ -4,3 +4,4 @@ workspace.code-workspace
 testing.js
 seeds
 .eslintrc.json
+confidential

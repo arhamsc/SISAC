@@ -24,6 +24,9 @@ const userSchema = new Schema({
     },
     token: String,
     refreshToken: String,
+    fcmToken: {
+      type: String,
+    },
     expiryDate: Number,
 });
 

@@ -1,9 +1,10 @@
-const { ExpressError } = require("../../middleWare/error_handlers");
-const Order = require("../../models/cafetaria/orders");
-const OrderItem = require("../../models/cafetaria/order_items.js");
-const User = require("../../models/user");
+const { ExpressError } = require('../../middleWare/error_handlers');
+const Order = require('../../models/cafetaria/orders');
+const OrderItem = require('../../models/cafetaria/order_items.js');
+const User = require('../../models/user');
 
-const Queue = require("../../queues");
+const sendPushNotification = require('../../utils/firebase_push_notifications/firebase_fcm');
+const Queue = require('../../queues');
 
 const q = new Queue();
 
@@ -15,21 +16,21 @@ module.exports.getOrders = async (req, res, next) => {
     const orders = await Order.find({
       user: user,
     }).populate({
-      path: "orderItems",
+      path: 'orderItems',
       populate: {
-        path: "orderedItem",
+        path: 'orderedItem',
         select: { _id: 1, name: 1, imageUrl: 1, isAvailable: 1 },
-        model: "MenuItem",
+        model: 'MenuItem',
       },
     });
     if (orders.length === 0) {
-      return res.json({ message: "There are no orders placed" });
+      return res.json({ message: 'There are no orders placed' });
     }
     return res.json({
       ...orders,
     });
   } catch (error) {
-    next(new ExpressError("Failed to fetch order", 400));
+    next(new ExpressError('Failed to fetch order', 400));
   }
 };
 
@@ -56,7 +57,7 @@ module.exports.newOrder = async (req, res, next) => {
       {
         token: token,
       },
-      "username name"
+      'username name',
     );
     const orderItemArray = orderItems.map((ele) => ele);
     //saving the individual ordered Item array in the database
@@ -82,11 +83,11 @@ module.exports.newOrder = async (req, res, next) => {
     //q.print();
     await newOrder.save();
     return res.send({
-      message: "Order placed successfully",
+      message: 'Order placed successfully',
     });
   } catch (e) {
     //console.log(e);
-    next(new ExpressError("Order could not be place", 400));
+    next(new ExpressError('Order could not be place', 400));
   }
 };
 
@@ -96,11 +97,11 @@ module.exports.fetchOneOrder = async (req, res, next) => {
     const { orderId } = req.params;
     const order = await Order.findById(orderId);
     if (!order) {
-      return res.json({ message: "Order Not found" });
+      return res.json({ message: 'Order Not found' });
     }
     return res.json({ ...order });
   } catch (e) {
-    next(new ExpressError("Failed to fetch order.", 400));
+    next(new ExpressError('Failed to fetch order.', 400));
   }
 };
 
@@ -108,23 +109,50 @@ module.exports.fetchOneOrder = async (req, res, next) => {
 module.exports.getAllOrders = async (req, res, next) => {
   try {
     const orders = await Order.find({})
-      .populate("user", "_id name username role")
+      .populate('user', '_id name username role')
       .populate({
-        path: "orderItems",
+        path: 'orderItems',
         populate: {
-          path: "orderedItem",
+          path: 'orderedItem',
           select: { _id: 1, name: 1, imageUrl: 1, isAvailable: 1 },
-          model: "MenuItem",
+          model: 'MenuItem',
         },
       });
 
     if (orders.length === 0) {
-      next(new ExpressError("No Orders", 404));
+      next(new ExpressError('No Orders', 404));
     } else {
       return res.json({ ...orders });
     }
   } catch (error) {
-    next(new ExpressError("Failed to fetch orders.", 400));
+    return next(new ExpressError('Failed to fetch orders.', 400));
+  }
+};
+
+module.exports.completeOrder = async (req, res, next) => {
+  try {
+    const { orderId } = req.params;
+    const { orderStatus } = req.query;
+
+    const order = await Order.findByIdAndUpdate(
+      orderId,
+      { orderStatus },
+      { new: true },
+    );
+    const { fcmToken } = await User.findById(order.user);
+    if (!order) return next(new ExpressError('Order not found', 404));
+    if (order.orderStatus === 'Completed') {
+      sendPushNotification.sendPushNotification(
+        'SISAC-Cafetaria',
+        'Your order is ready.',
+        'high',
+        fcmToken,
+      );
+    }
+    q.dequeue();
+    return res.json({ message: 'Order Updated' });
+  } catch (error) {
+    return next(new ExpressError('Failed to update the order.', 400));
   }
 };
 
@@ -133,8 +161,8 @@ module.exports.clearOrders = async (req, res, next) => {
     const { orderId } = req.params;
     await Order.findByIdAndDelete(orderId);
     q.dequeue();
-    return res.json({ message: "Order Deleted" });
+    return res.json({ message: 'Order Deleted' });
   } catch (error) {
-    return next(new ExpressError("Failed to delete the order.", 400));
+    return next(new ExpressError('Failed to delete the order.', 400));
   }
 };

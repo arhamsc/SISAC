@@ -1,29 +1,29 @@
-const passport = require("passport");
-const localStrategy = require("passport-local").Strategy;
-const User = require("../../models/user");
+const passport = require('passport');
+const localStrategy = require('passport-local').Strategy;
+const User = require('../../models/user');
 
-const JWTstrategy = require("passport-jwt").Strategy;
-const ExtractJWT = require("passport-jwt").ExtractJwt;
+const JWTstrategy = require('passport-jwt').Strategy;
+const ExtractJWT = require('passport-jwt').ExtractJwt;
 
-const roleEnums = ["Admin", "Student", "Faculty", "Stationary", "Other"];
+const roleEnums = ['Admin', 'Student', 'Faculty', 'Stationary', 'Other'];
 
 //for user registration
 passport.use(
-  "signup",
+  'signup',
   new localStrategy(
     {
-      usernameField: "username",
-      passwordField: "password",
+      usernameField: 'username',
+      passwordField: 'password',
       passReqToCallback: true,
     },
     async (req, username, password, done) => {
       try {
         const user = await User.findOne({ username: username });
         if (user) {
-          return done({ message: "User Exists" });
+          return done({ message: 'User Exists' });
         }
         if (!roleEnums.includes(req.body.role)) {
-          return done({ message: "Invalid Role" });
+          return done({ message: 'Invalid Role' });
         }
         const userNew = await new User({
           username: username,
@@ -33,45 +33,55 @@ passport.use(
         });
         await userNew.save();
         return done(null, userNew, {
-          message: "Successfully Signed up",
+          message: 'Successfully Signed up',
         });
       } catch (error) {
         return done(error);
       }
-    }
-  )
+    },
+  ),
 );
 
 //for user login
 passport.use(
-  "login",
+  'login',
   new localStrategy(
-    { usernameField: "username", passwordField: "password" },
-    async (username, password, done) => {
+    {
+      usernameField: 'username',
+      passwordField: 'password',
+      passReqToCallback: true,
+    },
+    async (req, username, password, done) => {
       try {
-        const user = await User.findOne({ username: username });
+        const user = await User.findOne({ username });
+        const { fcmtoken } = req.headers;
         if (!user) {
-          return done(null, false, { message: "User not found" });
+          return done(null, false, { message: 'User not found' });
         }
         const validate = await user.isValidPassword(password);
 
         if (!validate) {
           return done(null, false, {
-            message: "Wrong Username or Password",
+            message: 'Wrong Username or Password',
           });
         }
-        return done(null, user, { message: "Logged in Successfully" });
+
+        if (fcmtoken && fcmtoken.length !== 0) {
+          await User.findOneAndUpdate({ username }, { fcmToken: fcmtoken });
+        }
+
+        return done(null, user, { message: 'Logged in Successfully' });
       } catch (error) {
         return done(error);
       }
-    }
-  )
+    },
+  ),
 );
 
 //validating jwt
 const opts = {};
 opts.secretOrKey = process.env.SECRET;
-opts.jwtFromRequest = ExtractJWT.fromHeader("secret_token");
+opts.jwtFromRequest = ExtractJWT.fromHeader('secret_token');
 passport.use(
   new JWTstrategy(opts, async (jwt_payload, done) => {
     try {
@@ -83,5 +93,5 @@ passport.use(
     } catch (error) {
       return done(null, false, { message: error.message });
     }
-  })
+  }),
 );
