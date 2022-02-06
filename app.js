@@ -17,7 +17,7 @@ require('./middleWare/auth/auth');
 
 // route imports
 // const adminRoutes = require('./routes/admin/firebase_fcm');
-const userRoute = require('./routes/user');
+const userRoute = require('./routes/admin/user');
 const testRoute = require('./routes/testUser');
 const cafetariaRoute = require('./routes/cafetaria/cafetaria');
 const orderRoute = require('./routes/cafetaria/orders');
