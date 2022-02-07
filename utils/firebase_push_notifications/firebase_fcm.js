@@ -1,4 +1,4 @@
-const serviceAccount = require('../../confidential/sisac-b578f-firebase-adminsdk-paojo-e997940c21.json');
+const serviceAccount = require('../../confidential/sisac-b578f-firebase-adminsdk-paojo-be36c2550f.json');
 
 const admin = require('firebase-admin');
 admin.initializeApp({
