@@ -3,3 +3,4 @@ node_modules
 workspace.code-workspace
 testing.js
 seeds
+confidential
