@@ -7,10 +7,6 @@ admin.initializeApp({
 
 const fcm = require('firebase-admin/messaging');
 
-// module.exports.pushNoti = async (req, res, next) => {
-
-// };
-
 module.exports.sendPushNotification = async (
   title,
   bodyMessage,
