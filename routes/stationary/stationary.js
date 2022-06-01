@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 
 const multer = require("multer");
-const { storage } = require("../../cloudinary");
+const { storageFunc } = require("../../cloudinary");
+const storage = storageFunc("/stationary")
 const upload = multer({ storage });
 
 const roleHandler = require("../../middleWare/cafetaria/role_handlers");
