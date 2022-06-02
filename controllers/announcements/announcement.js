@@ -31,7 +31,7 @@ module.exports.makeAnnouncement = async (req, res, next) => {
 
 module.exports.editAnnouncement = async (req, res, next) => {
     try {
-        const {body, params, file } = req;
+        const { body, params, file } = req;
         const { announcement } = body;
         const { id } = params;
         const editedAnnouncement = await Announcement.findByIdAndUpdate(
@@ -40,13 +40,31 @@ module.exports.editAnnouncement = async (req, res, next) => {
             { new: true },
         );
         if (file) {
-            cloudinary.uploader.destroy(editedAnnouncement.posterFileName);
+            await cloudinary.uploader.destroy(
+                editedAnnouncement.posterFileName,
+            );
             editedAnnouncement.posterUrl = file.path;
             editedAnnouncement.posterFileName = file.filename;
         }
+        editedAnnouncement.edited = true;
+        editedAnnouncement.modifiedOn = new Date().toISOString();
         await editedAnnouncement.save();
         res.json({ editedAnnouncement, message: 'Edited Successfully' });
     } catch (error) {
         next(new ExpressError('Failed to edit!!'));
+    }
+};
+
+module.exports.deleteAnnouncement = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const deletedAnnouncement = await Announcement.findByIdAndDelete(id);
+        if (!deletedAnnouncement) {
+            next(new ExpressError('Announcement not found', 404));
+        }
+        await cloudinary.uploader.destroy(deletedAnnouncement.posterFileName);
+        res.json({ deletedAnnouncement, message: 'Deleted successfully.' });
+    } catch (error) {
+        next(new ExpressError());
     }
 };

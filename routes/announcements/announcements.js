@@ -11,6 +11,7 @@ const {
     getAllAnnouncements,
     makeAnnouncement,
     editAnnouncement,
+    deleteAnnouncement,
 } = require('../../controllers/announcements/announcement');
 
 router
@@ -20,5 +21,6 @@ router
 
 router
     .route('/:id')
-    .patch(checkAuthor, uploader.single('poster'), editAnnouncement);
+    .patch(checkAuthor, uploader.single('poster'), editAnnouncement)
+    .delete(deleteAnnouncement);
 module.exports = router;
