@@ -8,7 +8,7 @@ module.exports.getAllAnnouncements = async (req, res, next) => {
         const { query, user } = req;
         const { announcementByUser } = query;
         const { _id: userId } = user;
-        if (!announcementByUser || announcementByUser === null) {
+        if (announcementByUser != 'true') {
             const announcements = await Announcement.find({});
             res.json(announcements);
             return;
@@ -86,6 +86,24 @@ module.exports.deleteAnnouncement = async (req, res, next) => {
         }
         await cloudinary.uploader.destroy(deletedAnnouncement.posterFileName);
         res.json({ deletedAnnouncement, message: 'Deleted successfully.' });
+    } catch (error) {
+        next(new ExpressError());
+    }
+};
+
+module.exports.checkNotStudent = async (req, res, next) => {
+    try {
+        const { senderRole, method } = req;
+        if (senderRole === 'Student' && method !== 'GET') {
+            next(
+                new ExpressError(
+                    'Student not authorized to make an announcement!!',
+                    401,
+                ),
+            );
+            return;
+        }
+        next();
     } catch (error) {
         next(new ExpressError());
     }
