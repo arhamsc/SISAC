@@ -12,7 +12,7 @@ const storageFunc = (folderName) => {
         cloudinary,
         params: {
             folder: `SISAC/${folderName ?? ''}`,
-            allowedFormats: ['jpeg', 'png', 'jpg'],
+            allowedFormats: ['jpeg', 'png', 'jpg', 'pdf'],
         },
     });
     return storage;

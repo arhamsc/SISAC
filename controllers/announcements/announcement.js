@@ -2,12 +2,34 @@ const Announcement = require('../../models/announcements/announcement');
 const { ExpressError } = require('../../middleWare/error_handlers');
 const { cloudinary } = require('../../cloudinary');
 
+/* Method also contains logic to find all the announcements by a particular user. */
 module.exports.getAllAnnouncements = async (req, res, next) => {
     try {
-        const announcements = await Announcement.find({});
-        res.json(announcements);
+        const { query, user } = req;
+        const { announcementByUser } = query;
+        const { _id: userId } = user;
+        if (!announcementByUser || announcementByUser === null) {
+            const announcements = await Announcement.find({});
+            res.json(announcements);
+            return;
+        }
+        const announcementsByUser = await Announcement.find({ byUser: userId });
+        res.json(announcementsByUser);
     } catch (error) {
         next(new ExpressError('Failed to fetch announcements', 500));
+    }
+};
+
+module.exports.getAnnouncementById = async (req, res, next) => {
+    try {
+        const { params } = req;
+        const { id } = params;
+        const announcement = await Announcement.findById(id);
+        if (!announcement)
+            return next(new ExpressError('Announcement Not Found!', 404));
+        res.json(announcement);
+    } catch (error) {
+        next(new ExpressError());
     }
 };
 
