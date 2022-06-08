@@ -1,6 +1,7 @@
 const Announcement = require('../../models/announcements/announcement');
 const { ExpressError } = require('../../middleWare/error_handlers');
 const { cloudinary } = require('../../cloudinary');
+const { objectResponseWIthIdKey } = require('../../middleWare/helpers');
 
 /* Method also contains logic to find all the announcements by a particular user. */
 module.exports.getAllAnnouncements = async (req, res, next) => {
@@ -9,12 +10,15 @@ module.exports.getAllAnnouncements = async (req, res, next) => {
         const { announcementByUser } = query;
         const { _id: userId } = user;
         if (announcementByUser != 'true') {
-            const announcements = await Announcement.find({});
-            res.json(announcements);
+            const announcements = await Announcement.find({}).populate({
+                path: 'byUser',
+                select: { _id: 1, name: 1, role: 1, username: 1 },
+            });
+            res.json(objectResponseWIthIdKey(announcements));
             return;
         }
         const announcementsByUser = await Announcement.find({ byUser: userId });
-        res.json(announcementsByUser);
+        res.json(objectResponseWIthIdKey(announcementsByUser));
     } catch (error) {
         next(new ExpressError('Failed to fetch announcements', 500));
     }

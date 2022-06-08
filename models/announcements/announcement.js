@@ -39,7 +39,7 @@ const announcementSchema = new Schema({
         enum: [
             'College',
             'Department',
-            'Year',
+            'Semester',
             'Class',
             'Assignment',
             'Placements',
