@@ -1,9 +1,8 @@
 const router = require('express').Router();
-const multer = require('multer');
 
-const { storageFunc } = require('../../cloudinary');
-const storage = storageFunc('announcements');
-const uploader = multer({ storage });
+const uploader = require('../../cloudinary/multerInitialization').uploaderFunc(
+    'announcements',
+);
 
 const { checkAuthor } = require('../../middleWare/announcements/checkAuthor');
 

@@ -1,11 +1,9 @@
 const express = require('express');
 const router = express.Router();
 
-const multer = require('multer');
-const { storageFunc } = require('../../cloudinary');
-const storage = storageFunc('cafetaria');
-const upload = multer({ storage });
-
+const uploader = require('../../cloudinary/multerInitialization').uploaderFunc(
+    'announcements',
+);
 const cafetariaController = require('../../controllers/cafetaria/cafetaria');
 
 const { catchAsync } = require('../../middleWare/error_handlers');
@@ -16,7 +14,7 @@ router
     .get(catchAsync(cafetariaController.getMenu))
     .post(
         roleMiddleware.isOther,
-        upload.single('image'),
+        uploader.single('image'),
         cafetariaController.newMenuItem,
     );
 
@@ -27,7 +25,7 @@ router
     .get(cafetariaController.getMenuItem)
     .patch(
         roleMiddleware.isOther,
-        upload.single('image'),
+        uploader.single('image'),
         cafetariaController.editMenu,
     )
     .delete(roleMiddleware.isOther, cafetariaController.deleteMenuItem);

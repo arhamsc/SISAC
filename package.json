@@ -6,7 +6,7 @@
     "scripts": {
         "start": "node app.js",
         "test": "jest --watchAll --verbose",
-        "prod": "nodemon app.js"
+        "dev": "nodemon app.js"
     },
     "repository": {
         "type": "git",

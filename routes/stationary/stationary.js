@@ -1,10 +1,9 @@
 const express = require("express");
 const router = express.Router();
 
-const multer = require("multer");
-const { storageFunc } = require("../../cloudinary");
-const storage = storageFunc("/stationary")
-const upload = multer({ storage });
+const uploader = require('../../cloudinary/multerInitialization').uploaderFunc(
+    'announcements',
+);
 
 const roleHandler = require("../../middleWare/cafetaria/role_handlers");
 
@@ -19,22 +18,22 @@ router
 router
   .route("/booksmaterial")
   .get(stationaryController.getBooks)
-  .post(upload.single("image"), stationaryController.addBook);
+  .post(uploader.single("image"), stationaryController.addBook);
 
 router
   .route("/booksmaterial/:bookId")
-  .patch(upload.single("image"), stationaryController.editBook)
+  .patch(uploader.single("image"), stationaryController.editBook)
   .delete(stationaryController.deleteBook);
 
 
 router
   .route("/availablematerial")
   .get(stationaryController.getAllMaterials)
-  .post(upload.single("image"), stationaryController.addMaterial);
+  .post(uploader.single("image"), stationaryController.addMaterial);
 
 router
   .route("/availablematerial/:materialId")
-  .patch(upload.single("image"), stationaryController.editMaterial)
+  .patch(uploader.single("image"), stationaryController.editMaterial)
   .delete(stationaryController.deleteMaterial);
 
 module.exports = router;
