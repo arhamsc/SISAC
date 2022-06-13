@@ -40,7 +40,7 @@ module.exports.getAnnouncementById = async (req, res, next) => {
 module.exports.makeAnnouncement = async (req, res, next) => {
     try {
         const { user, body, file } = req;
-        const { announcement } = body;
+        const { announcement } = body; 
         const newAnnouncement = await new Announcement(announcement);
         newAnnouncement.byUser = user._id;
         newAnnouncement.createdOn = new Date().toISOString();
