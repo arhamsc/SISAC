@@ -40,7 +40,7 @@ module.exports.getAnnouncementById = async (req, res, next) => {
 module.exports.makeAnnouncement = async (req, res, next) => {
     try {
         const { user, body, file } = req;
-        const { announcement } = body; 
+        const { announcement } = body;
         const newAnnouncement = await new Announcement(announcement);
         newAnnouncement.byUser = user._id;
         newAnnouncement.createdOn = new Date().toISOString();
@@ -65,6 +65,9 @@ module.exports.editAnnouncement = async (req, res, next) => {
             { ...announcement },
             { new: true },
         );
+        if (announcement.level !== 'Department') {
+            editedAnnouncement.department = null;
+        }
         if (file) {
             await cloudinary.uploader.destroy(
                 editedAnnouncement.posterFileName,
@@ -77,6 +80,7 @@ module.exports.editAnnouncement = async (req, res, next) => {
         await editedAnnouncement.save();
         res.json({ editedAnnouncement, message: 'Edited Successfully' });
     } catch (error) {
+        console.log(error);
         next(new ExpressError('Failed to edit!!'));
     }
 };
