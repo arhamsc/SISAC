@@ -13,7 +13,7 @@ const facultySchema = new Schema({
     },
     facultyAssignments: [
         {
-            type: Schema.type.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: 'FacultyAssignment',
             required: true,
         },

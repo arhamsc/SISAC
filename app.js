@@ -23,6 +23,7 @@ const cafetariaRoute = require('./routes/cafetaria/cafetaria');
 const orderRoute = require('./routes/cafetaria/orders');
 const stationaryRoute = require('./routes/stationary/stationary');
 const announcementRoutes = require('./routes/announcements/announcements');
+const timeTableRoutes = require('./routes/timeTable/timeTable');
 const { roleFinder } = require('./middleWare/roleFinder');
 
 // const variables
@@ -56,6 +57,7 @@ app.use('/cafetaria/orders', orderRoute);
 app.use('/cafetaria', cafetariaRoute);
 app.use('/stationary', stationaryRoute);
 app.use('/announcement', announcementRoutes);
+app.use('/timetable', timeTableRoutes);
 
 app.use('/home', (req, res) => {
     res.send('This is working');

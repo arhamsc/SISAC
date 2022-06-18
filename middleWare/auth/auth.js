@@ -81,14 +81,14 @@ passport.use(
 //validating jwt
 const opts = {};
 opts.secretOrKey = process.env.SECRET;
-opts.jwtFromRequest = ExtractJWT.fromHeader('secret_token');
+opts.jwtFromRequest = ExtractJWT.fromAuthHeaderAsBearerToken();
 passport.use(
   new JWTstrategy(opts, async (jwt_payload, done) => {
     try {
       const user = await User.findById(jwt_payload.user._id);
       if (user.expiryDate < Date.now()) {
         return done(null, false);
-      }
+      }     
       return done(null, jwt_payload.user);
     } catch (error) {
       return done(null, false, { message: error.message });
