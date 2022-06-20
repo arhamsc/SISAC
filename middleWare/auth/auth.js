@@ -2,7 +2,7 @@ const passport = require('passport');
 const localStrategy = require('passport-local').Strategy;
 const User = require('../../models/user');
 
-const JWTstrategy = require('passport-jwt').Strategy;
+const JWTStrategy = require('passport-jwt').Strategy;
 const ExtractJWT = require('passport-jwt').ExtractJwt;
 
 const roleEnums = ['Admin', 'Student', 'Faculty', 'Stationary', 'Other'];
@@ -83,7 +83,7 @@ const opts = {};
 opts.secretOrKey = process.env.SECRET;
 opts.jwtFromRequest = ExtractJWT.fromAuthHeaderAsBearerToken();
 passport.use(
-  new JWTstrategy(opts, async (jwt_payload, done) => {
+  new JWTStrategy(opts, async (jwt_payload, done) => {
     try {
       const user = await User.findById(jwt_payload.user._id);
       if (user.expiryDate < Date.now()) {

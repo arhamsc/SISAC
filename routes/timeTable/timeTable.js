@@ -1,6 +1,39 @@
 const router = require('express').Router();
-const { getAllSubjects } = require('../../controllers/timeTable/timeTable');
+const uploader = require('../../cloudinary/multerInitialization').uploaderFunc(
+    'timetable',
+);
+const {
+    getAllSubjects,
+    createFaculty,
+    getAllFaculty,
+    deleteFaculty,
+    registerSubject,
+    deleteSubject,
+    getSubjectById,
+    patchSubject,
+    deleteSession,
+} = require('../../controllers/timeTable/timeTable');
+const { isFaculty } = require('../../middleWare/cafetaria/role_handlers');
 
-router.route('/').get(getAllSubjects);
+router
+    .route('/')
+    .get(getAllSubjects)
+    .post(uploader.single('syllabusDoc'), registerSubject);
+
+router
+    .route('/:subjectId')
+    .get(getSubjectById)
+    .patch(uploader.single('syllabusDoc'), patchSubject)
+    .delete(deleteSubject);
+
+router.route('/session/:sessionId').delete(deleteSession);
+
+router
+    .route('/faculty')
+    .get(isFaculty, getAllFaculty)
+    .post(isFaculty, createFaculty);
+
+//TODO: Make sure only the admin/principal/hod can create or delete the faculty info
+router.route('/faculty/:facultyId').delete(deleteFaculty);
 
 module.exports = router;

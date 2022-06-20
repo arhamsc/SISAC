@@ -19,6 +19,22 @@ const sessionSchema = new Schema({
         type: String,
         required: true,
     },
+    semester: {
+        type:Number,
+        required:true,
+    },
+    section: {
+        type: String,
+        required:true,
+    },
+    createdOn: {
+        type: Date,
+        required: true,
+    },
+    editedOn: {
+        type: Date,
+        default: null,
+    },
 });
 
 const Session = mongoose.model('Session', sessionSchema);

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const FacultyAssignment = require('./facultyAssignment');
 const Schema = mongoose.Schema;
 
 const facultySchema = new Schema({
@@ -18,6 +19,24 @@ const facultySchema = new Schema({
             required: true,
         },
     ],
+    createdOn: {
+        type: Date,
+        required: true,
+    },
+    editedOn: {
+        type: Date,
+        default: null,
+    },
+});
+
+facultySchema.post('findOneAndDelete', async function (doc) {
+    if (doc) {
+        await FacultyAssignment.deleteMany({
+            _id: {
+                $in: doc.facultyAssignments,
+            },
+        });
+    }
 });
 
 const Faculty = mongoose.model('Faculty', facultySchema);

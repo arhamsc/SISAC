@@ -24,6 +24,15 @@ const facultyAssignmentSchema = new Schema({
         required: true,
         enum: ['Lab', 'Tutorial', 'Lecture', 'Class Teacher', 'Other'],
     },
+
+    createdOn: {
+        type: Date,
+        required: true,
+    },
+    editedOn: {
+        type: Date,
+        default: null,
+    },
 });
 
 const FacultyAssignment = mongoose.model(

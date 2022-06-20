@@ -1,5 +1,6 @@
 const { ExpressError } = require('../error_handlers');
 
+//Sender role is populated by the role_finder middleware
 module.exports.isAdmin = async (req, res, next) => {
     try {
         const role = req.senderRole;
@@ -31,6 +32,7 @@ module.exports.isStudent = async (req, res, next) => {
 module.exports.isFaculty = async (req, res, next) => {
     try {
         const role = req.senderRole;
+        //console.log(role);
         if (role === null) {
             next(new ExpressError('Error in authenticating', 401));
         }
