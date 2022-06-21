@@ -12,6 +12,9 @@ const {
     getSubjectById,
     patchSubject,
     deleteSession,
+    getFacultyById,
+    updateFaculty,
+    deleteFacultyAssignment,
 } = require('../../controllers/timeTable/timeTable');
 const { isFaculty } = require('../../middleWare/cafetaria/role_handlers');
 
@@ -34,6 +37,14 @@ router
     .post(isFaculty, createFaculty);
 
 //TODO: Make sure only the admin/principal/hod can create or delete the faculty info
-router.route('/faculty/:facultyId').delete(deleteFaculty);
+router
+    .route('/faculty/:facultyId')
+    .get(getFacultyById)
+    .patch(updateFaculty)
+    .delete(deleteFaculty);
+
+router
+    .route('/facultyassignment/:facultyAssignmentId')
+    .delete(deleteFacultyAssignment);
 
 module.exports = router;
