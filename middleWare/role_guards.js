@@ -24,7 +24,7 @@ module.exports.isNotPO = async (req, res, next) => {
         }
         return role !== 'PO'
             ? next()
-            : next(new ExpressError('Not Allowed to POs', 400));
+            : next(new ExpressError('Not Allowed to POs', 401));
     } catch (error) {
         next(new ExpressError('Authentication Error', 401));
     }
