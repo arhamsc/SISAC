@@ -1,4 +1,4 @@
-const { ExpressError } = require('../error_handlers');
+const { ExpressError } = require('./error_handlers');
 
 //Sender role is populated by the role_finder middleware
 module.exports.isAdmin = async (req, res, next) => {

@@ -5,7 +5,7 @@ const uploader = require('../../cloudinary/multerInitialization').uploaderFunc(
     'announcements',
 );
 
-const roleHandler = require("../../middleWare/cafetaria/role_handlers");
+const roleHandler = require("../../middleWare/role_handlers");
 
 const stationaryController = require("../../controllers/stationary/stationary");
 

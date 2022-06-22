@@ -16,35 +16,35 @@ const {
     updateFaculty,
     deleteFacultyAssignment,
 } = require('../../controllers/timeTable/timeTable');
-const { isFaculty } = require('../../middleWare/cafetaria/role_handlers');
+const { isModerateRole } = require('../../middleWare/role_guards');
 
 router
     .route('/')
     .get(getAllSubjects)
-    .post(uploader.single('syllabusDoc'), registerSubject);
+    .post(isModerateRole, uploader.single('syllabusDoc'), registerSubject);
 
 router
     .route('/:subjectId')
     .get(getSubjectById)
-    .patch(uploader.single('syllabusDoc'), patchSubject)
-    .delete(deleteSubject);
+    .patch(isModerateRole, uploader.single('syllabusDoc'), patchSubject)
+    .delete(isModerateRole, deleteSubject);
 
-router.route('/session/:sessionId').delete(deleteSession);
+router.route('/session/:sessionId').delete(isModerateRole, deleteSession);
 
 router
     .route('/faculty')
-    .get(isFaculty, getAllFaculty)
-    .post(isFaculty, createFaculty);
+    .get(isModerateRole, getAllFaculty)
+    .post(isModerateRole, createFaculty);
 
 //TODO: Make sure only the admin/principal/hod can create or delete the faculty info
 router
     .route('/faculty/:facultyId')
     .get(getFacultyById)
-    .patch(updateFaculty)
-    .delete(deleteFaculty);
+    .patch(isModerateRole, updateFaculty)
+    .delete(isModerateRole, deleteFaculty);
 
 router
     .route('/facultyassignment/:facultyAssignmentId')
-    .delete(deleteFacultyAssignment);
+    .delete(isModerateRole, deleteFacultyAssignment);
 
 module.exports = router;

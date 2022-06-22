@@ -3,7 +3,7 @@ const router = express.Router();
 
 const orderControllers = require('../../controllers/cafetaria/orders');
 
-const roleMiddleware = require('../../middleWare/cafetaria/role_handlers');
+const roleMiddleware = require('../../middleWare/role_handlers');
 
 router
   .route('/')

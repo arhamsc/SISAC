@@ -87,7 +87,7 @@ module.exports.isDean = async (req, res, next) => {
         if (role === null) {
             next(new ExpressError('Error in authenticating', 401));
         }
-        return role === 'CR' ? next() : next(new ExpressError('Not CR', 404));
+        return role === 'Dean' ? next() : next(new ExpressError('Not Dean', 404));
     } catch (error) {
         next(new ExpressError('Authentication Error', 401));
     }

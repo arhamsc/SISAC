@@ -7,7 +7,7 @@ const uploader = require('../../cloudinary/multerInitialization').uploaderFunc(
 const cafetariaController = require('../../controllers/cafetaria/cafetaria');
 
 const { catchAsync } = require('../../middleWare/error_handlers');
-const roleMiddleware = require('../../middleWare/cafetaria/role_handlers');
+const roleMiddleware = require('../../middleWare/role_handlers');
 
 router
     .route('/')
