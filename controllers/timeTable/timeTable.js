@@ -11,10 +11,18 @@ const helpers = require('../../middleWare/helpers.js');
 
 module.exports.getAllSubjects = async (req, res, next) => {
     try {
-        const Subjects = await Subject.find({});
+        const Subjects = await Subject.find({})
+            .populate('sessions')
+            .populate({
+                path: 'facultiesIncharge',
+                populate: {
+                    path: 'user',
+                },
+            });
         res.json(helpers.objectResponseWIthIdKey(Subjects));
     } catch (error) {
         next(new ExpressError());
+        console.log(error);
     }
 };
 
@@ -78,33 +86,35 @@ module.exports.patchSubject = async (req, res, next) => {
             next(new ExpressError('Subject not found', 404));
         }
 
-        //Request should contain session id
-        session.forEach(async (e) => {
-            const existingSession = await Session.findById(e._id);
-            if (!existingSession) {
-                const newSession = await new Session(e);
-                newSession.subject = editedSubject._id;
-                newSession.createdOn = new Date().toISOString();
-                //TODO: DO an alternative as it is one more query to the DB,
-                //NOTE: The below one was implemented because normal push wasn't working.
-                //await editedSubject.sessions.push(newSession);
-                await Subject.findOneAndUpdate(
-                    { _id: subjectId },
-                    { $push: { sessions: newSession } },
-                );
-                await newSession.save();
-            } else {
-                existingSession.subject = e.subject;
-                existingSession.dateAndTime = e.dateAndTime;
-                existingSession.duration = e.duration;
-                existingSession.room = e.room;
-                existingSession.semester = e.semester;
-                existingSession.section = e.section;
-                existingSession.createdOn = e.createdOn;
-                existingSession.editedOn = new Date().toISOString();
-                await existingSession.save();
-            }
-        });
+        if (session) {
+            //Request should contain session id
+            session.forEach(async (e) => {
+                const existingSession = await Session.findById(e._id);
+                if (!existingSession) {
+                    const newSession = await new Session(e);
+                    newSession.subject = editedSubject._id;
+                    newSession.createdOn = new Date().toISOString();
+                    //TODO: DO an alternative as it is one more query to the DB,
+                    //NOTE: The below one was implemented because normal push wasn't working.
+                    //await editedSubject.sessions.push(newSession);
+                    await Subject.findOneAndUpdate(
+                        { _id: subjectId },
+                        { $push: { sessions: newSession } },
+                    );
+                    await newSession.save();
+                } else {
+                    existingSession.subject = e.subject;
+                    existingSession.dateAndTime = e.dateAndTime;
+                    existingSession.duration = e.duration;
+                    existingSession.room = e.room;
+                    existingSession.semester = e.semester;
+                    existingSession.section = e.section;
+                    existingSession.createdOn = e.createdOn;
+                    existingSession.editedOn = new Date().toISOString();
+                    await existingSession.save();
+                }
+            });
+        }
 
         facultiesIncharge.forEach((e) => {
             if (!editedSubject.facultiesIncharge.includes(e)) {
